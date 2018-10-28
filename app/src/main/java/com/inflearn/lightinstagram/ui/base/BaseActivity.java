@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.inflearn.lightinstagram.R;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected final String TAG = getClass().getSimpleName();
     protected Context context;
+    protected RxPermissions rxPermissions;
     private Toolbar toolbar;
 
     public Toolbar getToolbar() {
@@ -27,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         context = this;
+        rxPermissions = new RxPermissions(this);
         toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) initializeToolbar(toolbar);
     }

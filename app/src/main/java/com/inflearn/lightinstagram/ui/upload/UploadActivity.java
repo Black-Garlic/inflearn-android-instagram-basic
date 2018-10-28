@@ -1,5 +1,9 @@
 package com.inflearn.lightinstagram.ui.upload;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,11 +14,15 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.inflearn.lightinstagram.R;
 import com.inflearn.lightinstagram.ui.base.BaseActivity;
+import com.inflearn.lightinstagram.util.FileUtil;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 public class UploadActivity extends BaseActivity {
+
+    private final int CODE_GALLERY = 1;
 
     private FrameLayout boxImage;
     private ImageView imgUpload;
@@ -53,6 +61,21 @@ public class UploadActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case CODE_GALLERY:
+                if (resultCode != Activity.RESULT_OK) break;
+                Uri uri = data.getData();
+                String path = FileUtil.getPath(context, uri);
+                imgUpload.setImageBitmap(BitmapFactory.decodeFile(path));
+                imgUpload.setVisibility(View.VISIBLE);
+                txtImageGuide.setVisibility(View.GONE);
+                break;
+        }
+    }
+
     private void findView() {
         boxImage = findViewById(R.id.box_image);
         imgUpload = findViewById(R.id.img_upload);
@@ -64,7 +87,9 @@ public class UploadActivity extends BaseActivity {
         boxImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get image and set imageview with the image
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType(FileUtil.MIME_IMAGE);
+                startActivityForResult(intent, CODE_GALLERY);
             }
         });
     }
