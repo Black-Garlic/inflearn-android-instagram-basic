@@ -1,8 +1,8 @@
 package com.inflearn.lightinstagram.data.source;
 
 import com.inflearn.lightinstagram.data.entity.User;
-import com.inflearn.lightinstagram.data.network.RetrofitStore;
-import com.inflearn.lightinstagram.data.network.service.GithubService;
+import com.inflearn.lightinstagram.network.RetrofitStore;
+import com.inflearn.lightinstagram.network.service.GithubService;
 
 import java.util.List;
 

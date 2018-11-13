@@ -5,14 +5,20 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.inflearn.lightinstagram.R;
+import com.inflearn.lightinstagram.data.entity.Feed;
+import com.inflearn.lightinstagram.data.entity.User;
+import com.inflearn.lightinstagram.data.source.FeedLocalSource;
+import com.inflearn.lightinstagram.data.source.UserLocalSource;
 import com.inflearn.lightinstagram.ui.base.BaseActivity;
 import com.inflearn.lightinstagram.util.FileUtil;
 
@@ -28,6 +34,10 @@ public class UploadActivity extends BaseActivity {
     private ImageView imgUpload;
     private TextView txtImageGuide;
     private TextInputEditText inputText;
+    private String imagePath;
+
+    private FeedLocalSource feedLocalSource = new FeedLocalSource();
+    private UserLocalSource userLocalSource = new UserLocalSource();
 
     @Override
     protected int getLayoutId() {
@@ -52,8 +62,7 @@ public class UploadActivity extends BaseActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_upload:
-                        // Do Upload
-                        finish();
+                        upload();
                         break;
                 }
                 return true;
@@ -68,8 +77,8 @@ public class UploadActivity extends BaseActivity {
             case CODE_GALLERY:
                 if (resultCode != Activity.RESULT_OK) break;
                 Uri uri = data.getData();
-                String path = FileUtil.getPath(context, uri);
-                imgUpload.setImageBitmap(BitmapFactory.decodeFile(path));
+                imagePath = FileUtil.getPath(context, uri);
+                imgUpload.setImageBitmap(BitmapFactory.decodeFile(imagePath));
                 imgUpload.setVisibility(View.VISIBLE);
                 txtImageGuide.setVisibility(View.GONE);
                 break;
@@ -92,5 +101,35 @@ public class UploadActivity extends BaseActivity {
                 startActivityForResult(intent, CODE_GALLERY);
             }
         });
+    }
+
+    private void upload() {
+        User user = userLocalSource.getMaster();
+        String text = inputText.getText().toString();
+
+        if (!validate(user, text, imagePath)) return;
+
+        Feed feed = new Feed(user.getId(), inputText.getText().toString(), imagePath);
+        feedLocalSource.insert(feed);
+        finish();
+    }
+
+    private boolean validate(User user, String text, String imagePath) {
+        if (user == null) {
+            Toast.makeText(context, R.string.upload_empty_user, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(text)) {
+            Toast.makeText(context, R.string.upload_empty_text, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (imagePath == null) {
+            Toast.makeText(context, R.string.upload_empty_image, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 }

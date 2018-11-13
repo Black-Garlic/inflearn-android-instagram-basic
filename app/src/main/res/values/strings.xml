@@ -14,6 +14,9 @@
     <!-- Upload -->
     <string name="upload_text_hint">문구 입력…</string>
     <string name="upload_image_guide">이미지를 업로드 하려면 누르세요</string>
+    <string name="upload_empty_user">사용자가 없습니다.</string>
+    <string name="upload_empty_text">내용을 입력해주세요.</string>
+    <string name="upload_empty_image">이미지를 가져와주세요.</string>
 
     <!-- Noti -->
     <string name="noti_title">Noti</string>

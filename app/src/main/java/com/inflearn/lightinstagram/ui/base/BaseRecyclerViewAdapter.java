@@ -12,7 +12,8 @@ public abstract class BaseRecyclerViewAdapter extends RecyclerView.Adapter<BaseV
 
     protected List<Object> items = new ArrayList<>();
 
-    public void addAll(List<?> items) {
+    public void refresh(List<?> items) {
+        this.items.clear();
         this.items.addAll(items);
         notifyDataSetChanged();
     }

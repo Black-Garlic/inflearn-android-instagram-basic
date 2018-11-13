@@ -1,4 +1,4 @@
-package com.inflearn.lightinstagram.data.network.service;
+package com.inflearn.lightinstagram.network.service;
 
 import com.inflearn.lightinstagram.data.entity.User;
 

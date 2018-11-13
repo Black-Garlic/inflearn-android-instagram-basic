@@ -6,29 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.inflearn.lightinstagram.R;
-import com.inflearn.lightinstagram.data.entity.User;
-import com.inflearn.lightinstagram.data.source.GithubRemoteSource;
+import com.inflearn.lightinstagram.data.source.FeedLocalSource;
 import com.inflearn.lightinstagram.ui.base.BaseFragment;
-import com.inflearn.lightinstagram.ui.view.LoadingBar;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FeedFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
-    private LoadingBar loadingBar;
-
     private FeedAdapter adapter;
-    private GithubRemoteSource dataSource = new GithubRemoteSource();
+    private FeedLocalSource feedLocalSource = new FeedLocalSource();
 
     @Nullable
     @Override
@@ -49,12 +40,16 @@ public class FeedFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRecyclerView();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         loadItems();
     }
 
     private void findView(View view) {
         recyclerView = view.findViewById(R.id.recyclerview);
-        loadingBar = view.findViewById(R.id.loading);
     }
 
     private void setRecyclerView() {
@@ -64,20 +59,6 @@ public class FeedFragment extends BaseFragment {
     }
 
     private void loadItems() {
-        loadingBar.show();
-        dataSource.get(new Callback<List<User>>() {
-
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                loadingBar.hide();
-                adapter.addAll(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                loadingBar.hide();
-                t.printStackTrace();
-            }
-        });
+        adapter.refresh(feedLocalSource.getAll());
     }
 }

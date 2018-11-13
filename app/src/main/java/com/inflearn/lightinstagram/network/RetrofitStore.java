@@ -1,4 +1,4 @@
-package com.inflearn.lightinstagram.data.network;
+package com.inflearn.lightinstagram.network;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
